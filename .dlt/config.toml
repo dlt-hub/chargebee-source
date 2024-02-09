@@ -1,0 +1,5 @@
+[chargebee_pipeline]
+# Base URL for the API
+# Live Site
+# ex.: base_url = "https://name-test.chargebee.com/api/v1"
+base_url = "https://XXXX.chargebee.com/api/v1"  # please set me up!

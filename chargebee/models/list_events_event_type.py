@@ -1,0 +1,42 @@
+from enum import Enum
+
+
+class ListEventsEventType(str, Enum):
+    CARD_ADDED = "card_added"
+    CARD_DELETED = "card_deleted"
+    CARD_EXPIRED = "card_expired"
+    CARD_EXPIRING = "card_expiring"
+    CARD_UPDATED = "card_updated"
+    CUSTOMER_CHANGED = "customer_changed"
+    CUSTOMER_CREATED = "customer_created"
+    CUSTOMER_DELETED = "customer_deleted"
+    INVOICE_CREATED = "invoice_created"
+    INVOICE_DELETED = "invoice_deleted"
+    INVOICE_GENERATED = "invoice_generated"
+    INVOICE_UPDATED = "invoice_updated"
+    PAYMENT_FAILED = "payment_failed"
+    PAYMENT_INITIATED = "payment_initiated"
+    PAYMENT_REFUNDED = "payment_refunded"
+    PAYMENT_SUCCEEDED = "payment_succeeded"
+    REFUND_INITIATED = "refund_initiated"
+    SUBSCRIPTION_ACTIVATED = "subscription_activated"
+    SUBSCRIPTION_CANCELLATION_SCHEDULED = "subscription_cancellation_scheduled"
+    SUBSCRIPTION_CANCELLED = "subscription_cancelled"
+    SUBSCRIPTION_CANCELLING = "subscription_cancelling"
+    SUBSCRIPTION_CHANGED = "subscription_changed"
+    SUBSCRIPTION_CREATED = "subscription_created"
+    SUBSCRIPTION_DELETED = "subscription_deleted"
+    SUBSCRIPTION_REACTIVATED = "subscription_reactivated"
+    SUBSCRIPTION_RENEWAL_REMINDER = "subscription_renewal_reminder"
+    SUBSCRIPTION_RENEWED = "subscription_renewed"
+    SUBSCRIPTION_SCHEDULED_CANCELLATION_REMOVED = "subscription_scheduled_cancellation_removed"
+    SUBSCRIPTION_SHIPPING_ADDRESS_UPDATED = "subscription_shipping_address_updated"
+    SUBSCRIPTION_STARTED = "subscription_started"
+    SUBSCRIPTION_TRIAL_ENDING = "subscription_trial_ending"
+    SUBSCRIPTION_TRIAL_EXTENDED = "subscription_trial_extended"
+    TRANSACTION_CREATED = "transaction_created"
+    TRANSACTION_DELETED = "transaction_deleted"
+    TRANSACTION_UPDATED = "transaction_updated"
+
+    def __str__(self) -> str:
+        return str(self.value)
