@@ -1,14 +1,12 @@
-from http import HTTPStatus
 from typing import Any, Dict, Iterator, Optional, Union
 
 import dlt
-from dlt.sources.helpers import requests
 
 from ...models.list_events_event_type import ListEventsEventType
 from ...models.list_events_webhook_status import ListEventsWebhookStatus
 from ...security.basic_auth import BasicAuth
-from ...types import UNSET, Response, Unset
-from ...utils import extract_nested_data
+from ...types import UNSET, Unset
+from ...utils import get_pages
 
 
 def _get_kwargs(
@@ -78,15 +76,6 @@ def _get_kwargs(
     }
 
 
-def _build_response(response: requests.Response) -> Response[Any]:
-    return Response(
-        status_code=HTTPStatus(response.status_code),
-        content=response.content,
-        headers=response.headers,
-        parsed=response.json(),
-    )
-
-
 @dlt.resource(table_name="events")
 def list_events(
     limit: Union[Unset, None, int] = 10,
@@ -148,5 +137,4 @@ def list_events(
         chargebee_request_origin_user_encoded=chargebee_request_origin_user_encoded,
         chargebee_request_origin_ip=chargebee_request_origin_ip,
     )
-    response = _build_response(requests.request(**kwargs))
-    yield extract_nested_data(response.parsed, data_json_path)
+    yield from get_pages(kwargs, data_json_path)

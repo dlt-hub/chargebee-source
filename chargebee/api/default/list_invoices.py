@@ -1,24 +1,22 @@
-from http import HTTPStatus
 from typing import Any, Dict, Iterator, Optional, Union
 
 import dlt
-from dlt.sources.helpers import requests
 
 from ...security.basic_auth import BasicAuth
-from ...types import UNSET, Response, Unset
-from ...utils import extract_nested_data
+from ...types import UNSET, Unset
+from ...utils import get_pages
 
 
 def _get_kwargs(
-    limit: Union[Unset, None, int] = 10,
-    offset: Union[Unset, None, str] = UNSET,
-    paid_on_after: Union[Unset, None, int] = UNSET,
-    chargebee_request_origin_device: Union[Unset, str] = UNSET,
-    chargebee_request_origin_user: Union[Unset, str] = UNSET,
-    chargebee_request_origin_user_encoded: Union[Unset, str] = UNSET,
-    chargebee_request_origin_ip: Union[Unset, str] = UNSET,
-    base_url: str = dlt.config.value,
-    credentials: BasicAuth = dlt.secrets.value,
+        limit: Union[Unset, None, int] = 10,
+        offset: Union[Unset, None, str] = UNSET,
+        paid_on_after: Union[Unset, None, int] = UNSET,
+        chargebee_request_origin_device: Union[Unset, str] = UNSET,
+        chargebee_request_origin_user: Union[Unset, str] = UNSET,
+        chargebee_request_origin_user_encoded: Union[Unset, str] = UNSET,
+        chargebee_request_origin_ip: Union[Unset, str] = UNSET,
+        base_url: str = dlt.config.value,
+        credentials: BasicAuth = dlt.secrets.value,
 ) -> Dict[str, Any]:
     url = "{}/invoices".format(base_url)
 
@@ -59,27 +57,18 @@ def _get_kwargs(
     }
 
 
-def _build_response(response: requests.Response) -> Response[Any]:
-    return Response(
-        status_code=HTTPStatus(response.status_code),
-        content=response.content,
-        headers=response.headers,
-        parsed=response.json(),
-    )
-
-
 @dlt.resource(table_name="invoices")
 def list_invoices(
-    limit: Union[Unset, None, int] = 10,
-    offset: Union[Unset, None, str] = UNSET,
-    paid_on_after: Union[Unset, None, int] = UNSET,
-    chargebee_request_origin_device: Union[Unset, str] = UNSET,
-    chargebee_request_origin_user: Union[Unset, str] = UNSET,
-    chargebee_request_origin_user_encoded: Union[Unset, str] = UNSET,
-    chargebee_request_origin_ip: Union[Unset, str] = UNSET,
-    base_url: str = dlt.config.value,
-    credentials: BasicAuth = dlt.secrets.value,
-    data_json_path: Optional[str] = "list",
+        limit: Union[Unset, None, int] = 10,
+        offset: Union[Unset, None, str] = UNSET,
+        paid_on_after: Union[Unset, None, int] = UNSET,
+        chargebee_request_origin_device: Union[Unset, str] = UNSET,
+        chargebee_request_origin_user: Union[Unset, str] = UNSET,
+        chargebee_request_origin_user_encoded: Union[Unset, str] = UNSET,
+        chargebee_request_origin_ip: Union[Unset, str] = UNSET,
+        base_url: str = dlt.config.value,
+        credentials: BasicAuth = dlt.secrets.value,
+        data_json_path: Optional[str] = "list",
 ) -> Iterator[Any]:
     r"""List invoices
 
@@ -119,5 +108,4 @@ def list_invoices(
         chargebee_request_origin_user_encoded=chargebee_request_origin_user_encoded,
         chargebee_request_origin_ip=chargebee_request_origin_ip,
     )
-    response = _build_response(requests.request(**kwargs))
-    yield extract_nested_data(response.parsed, data_json_path)
+    yield from get_pages(kwargs, data_json_path)

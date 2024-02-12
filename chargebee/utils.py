@@ -1,9 +1,13 @@
 import re
-from typing import Any, Iterator, Optional
+from http import HTTPStatus
+from typing import Any, Iterator, Optional, Dict
 from urllib import parse
 
 from dlt.common.jsonpath import TJsonPath, find_values
 from dlt.common.typing import TDataItems
+from dlt.sources.helpers import requests
+
+from .types import Response
 
 
 def extract_nested_data(response_data: Any, path: Optional[TJsonPath] = None) -> Iterator[Any]:
@@ -26,7 +30,7 @@ def extract_url_like_values(data: dict) -> Iterator[str]:
 
 
 def extract_iterate_parent(
-    data: TDataItems, property_name: str, path_param_name: str, endpoint_url: str
+        data: TDataItems, property_name: str, path_param_name: str, endpoint_url: str
 ) -> Iterator[Any]:
     """Extract kwargs to use in transformer requests"""
     if not isinstance(data, list):
@@ -69,3 +73,21 @@ def pluck_param_from_result_url(result_url: str, endpoint_url: str):
             if re_part != e_part:
                 return None
     return prop_found
+
+
+def _build_response(response: requests.Response) -> Response[Any]:
+    return Response(
+        status_code=HTTPStatus(response.status_code),
+        content=response.content,
+        headers=response.headers,
+        parsed=response.json(),
+    )
+
+
+def get_pages(kwargs: Dict[str, Any], data_json_path):
+    has_more = True
+    while has_more:
+        response = _build_response(requests.request(**kwargs))
+        yield extract_nested_data(response.parsed, data_json_path)
+        kwargs["params"]["offset"] = response.parsed.get("next_offset", None)
+        has_more = kwargs["params"]["offset"] is not None
